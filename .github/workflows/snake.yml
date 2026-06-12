@@ -7,23 +7,17 @@ on:
   workflow_dispatch: # Manual trigger from the Actions tab
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required to push the SVG to the output branch
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
+      # Platane/snk@v3 self-contains git operations: it generates the SVG
+      # and pushes it to a branch named "output" in the same repo, using
+      # GITHUB_TOKEN. No checkout step is needed (and adding one breaks it).
       - name: Generate snake.svg and push to output branch
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/github-snake.svg
-            dist/github-snake-dark.svg?palette=github-dark
-          # Commit the SVGs to a branch named 'output'
-          commit_message: "chore(snake): regenerate contribution snake"
-          branch: output
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
