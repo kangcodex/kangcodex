@@ -14,14 +14,6 @@
 
 ---
 
-### 🏆 GitHub Trophies
-
-<p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=kangcodex&theme=tokyonight&no-frame=true&no-bg=false&margin-w=4&row=1" alt="GitHub Trophies" />
-</p>
-
----
-
 ### 📊 GitHub Stats
 
 <p align="center">
@@ -31,23 +23,6 @@
 
 <p align="center">
   <img src="https://streak-stats.demolab.com?user=kangcodex&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
-</p>
-
----
-
-### ⏱️ WakaTime Coding Stats
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=kangcodex&theme=tokyonight&hide_border=true&layout=compact" alt="WakaTime Stats" />
-</p>
-<sub align="center">⚡ Tip: connect WakaTime at wakatime.com → Settings → Profiles → Public to populate this card.</sub>
-
----
-
-### 🐍 Contribution Snake
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/kangcodex/kangcodex/output/github-snake.svg" alt="Snake animation" />
 </p>
 
 ---
