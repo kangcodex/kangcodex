@@ -7,13 +7,15 @@
 ---
 
 ### 🧰 Tech Stack
+
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=ts,js,react,nextjs,html,css,tailwind,nodejs,python,go,rust,docker,kubernetes,aws,githubactions,linux" alt="Tech stack icons" />
+  <img src="https://skillicons.dev/icons?i=python,react,nextjs,go,docker,kubernetes,aws" alt="Tech stack icons" />
 </p>
 
 ---
 
 ### 🏆 GitHub Trophies
+
 <p align="center">
   <img src="https://github-profile-trophy.vercel.app/?username=kangcodex&theme=tokyonight&no-frame=true&no-bg=false&margin-w=4&row=1" alt="GitHub Trophies" />
 </p>
@@ -21,6 +23,7 @@
 ---
 
 ### 📊 GitHub Stats
+
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub Stats" height="170" />
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=kangcodex&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top Languages" height="170" />
@@ -33,6 +36,7 @@
 ---
 
 ### ⏱️ WakaTime Coding Stats
+
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api/wakatime?username=kangcodex&theme=tokyonight&hide_border=true&layout=compact" alt="WakaTime Stats" />
 </p>
@@ -41,6 +45,7 @@
 ---
 
 ### 🐍 Contribution Snake
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/kangcodex/kangcodex/output/github-snake.svg" alt="Snake animation" />
 </p>
@@ -48,6 +53,7 @@
 ---
 
 ### 🤝 Connect
+
 <p align="center">
   <a href="https://kangcodex.github.io/"><img src="https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=About.me&logoColor=white" alt="Website" /></a>
 </p>
