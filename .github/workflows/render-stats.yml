@@ -1,0 +1,80 @@
+name: Update stats cards
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Clone github-readme-stats
+        run: |
+          git clone --depth 1 https://github.com/anuraghazra/github-readme-stats.git /tmp/github-readme-stats
+
+      - name: Install dependencies
+        run: |
+          cd /tmp/github-readme-stats || exit
+          npm ci || npm install
+
+      - name: Start local server
+        env:
+          PAT_1: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd /tmp/github-readme-stats || exit
+          node express.js &
+          echo "SERVER_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for server
+        run: |
+          for i in {1..30}; do
+            if curl -sf "http://localhost:9000/api?username=kangcodex" > /dev/null 2>&1; then
+              echo "Server ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to start"
+          exit 1
+
+      - name: Generate cards
+        run: |
+          mkdir -p profile
+          curl -sf "http://localhost:9000/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" > profile/stats.svg
+          curl -sf "http://localhost:9000/api/top-langs?username=kangcodex&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" > profile/top-langs.svg
+
+      - name: Stop server
+        run: |
+          kill "$SERVER_PID" || true
+
+      - name: Validate SVGs
+        run: |
+          for f in profile/stats.svg profile/top-langs.svg; do
+            if grep -q "Something went wrong" "$f" || grep -qi "DEPLOYMENT" "$f" || grep -qi "rate limit" "$f"; then
+              echo "Error content in $f"
+              cat "$f"
+              exit 1
+            fi
+            if ! grep -q "<svg" "$f"; then
+              echo "Not a valid SVG: $f"
+              cat "$f"
+              exit 1
+            fi
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add profile/
+          git diff --cached --quiet || (git commit -m "Update stats cards" && git push)
