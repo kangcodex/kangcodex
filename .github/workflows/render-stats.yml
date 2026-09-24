@@ -24,14 +24,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd /tmp/github-readme-stats
+          cd /tmp/github-readme-stats || exit
           npm ci || npm install
 
       - name: Start local server
         env:
           PAT_1: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd /tmp/github-readme-stats
+          cd /tmp/github-readme-stats || exit
           node express.js &
           echo "SERVER_PID=$!" >> "$GITHUB_ENV"
 
