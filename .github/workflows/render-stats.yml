@@ -51,15 +51,36 @@ jobs:
         run: |
           mkdir -p profile
           curl -sf "http://localhost:9000/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" > profile/stats.svg
-          curl -sf "http://localhost:9000/api/top-langs?username=kangcodex&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" > profile/top-langs.svg
+          curl -sf "http://localhost:9000/api/top-langs?username=kangcodex&layout=compact&theme=tokyonight&hide_border=true&langs_count=8&exclude_repo=Covid-19-Prediction" > profile/top-langs.svg
 
       - name: Stop server
         run: |
           kill "$SERVER_PID" || true
 
+      - name: Generate commit-based language card
+        run: |
+          TMP_SVG=$(mktemp)
+          curl -sf --connect-timeout 10 --max-time 60 "https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > "$TMP_SVG" || true
+
+          # Validate output
+          if grep -q "<svg" "$TMP_SVG" && ! grep -qi "error\|something went wrong\|deployment\|rate limit" "$TMP_SVG"; then
+            mv "$TMP_SVG" profile/most-commit-langs.svg
+          else
+            echo "Failed to generate most-commit-langs.svg"
+            cat "$TMP_SVG"
+            if [ -f profile/most-commit-langs.svg ]; then
+              echo "Keeping previously committed file"
+              rm -f "$TMP_SVG"
+              exit 0
+            else
+              rm -f "$TMP_SVG"
+              exit 1
+            fi
+          fi
+
       - name: Validate SVGs
         run: |
-          for f in profile/stats.svg profile/top-langs.svg; do
+          for f in profile/stats.svg profile/top-langs.svg profile/most-commit-langs.svg; do
             if grep -q "Something went wrong" "$f" || grep -qi "DEPLOYMENT" "$f" || grep -qi "rate limit" "$f"; then
               echo "Error content in $f"
               cat "$f"
