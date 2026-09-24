@@ -17,8 +17,8 @@
 ### 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats-eight-virid.vercel.app/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub Stats" height="170" />
-  <img src="https://github-readme-stats-eight-virid.vercel.app/api/top-langs/?username=kangcodex&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top Languages" height="170" />
+  <img src="./profile/stats.svg" alt="GitHub Stats" height="170" />
+  <img src="./profile/top-langs.svg" alt="Top Languages" height="170" />
 </p>
 
 <p align="center">
