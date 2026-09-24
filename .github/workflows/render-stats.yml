@@ -58,34 +58,9 @@ jobs:
           kill "$SERVER_PID" || true
 
       - name: Generate commit-based language card
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TMP_SVG=$(mktemp)
-          SELF_HOSTED=false
-
-          # Try self-hosting github-profile-summary-cards
-          if git clone --depth 1 https://github.com/vn7n24fzkq/github-profile-summary-cards.git /tmp/summary-cards 2>/dev/null; then
-            cd /tmp/summary-cards
-            npm ci || npm install
-            GITHUB_TOKEN="$GITHUB_TOKEN" npm run dev &
-            SUMMARY_PID=$!
-            for i in {1..30}; do
-              if curl -sf "http://localhost:3000/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > "$TMP_SVG" 2>/dev/null; then
-                if grep -q "<svg" "$TMP_SVG" && ! grep -qi "error\|something went wrong\|deployment\|rate limit" "$TMP_SVG"; then
-                  SELF_HOSTED=true
-                  break
-                fi
-              fi
-              sleep 1
-            done
-            kill "$SUMMARY_PID" 2>/dev/null || true
-          fi
-
-          # Fallback to public instance if self-hosting failed
-          if [ "$SELF_HOSTED" != "true" ]; then
-            curl -sf "https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > "$TMP_SVG"
-          fi
+          curl -sf --connect-timeout 10 --max-time 60 "https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > "$TMP_SVG" || true
 
           # Validate output
           if grep -q "<svg" "$TMP_SVG" && ! grep -qi "error\|something went wrong\|deployment\|rate limit" "$TMP_SVG"; then
