@@ -57,7 +57,13 @@ jobs:
 
       - name: Generate commit-ranked language card
         run: |
-          curl -sf --connect-timeout 10 --max-time 60 "https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > profile/top-langs.svg
+          TMP_SVG=$(mktemp profile/top-langs.svg.XXXXXX)
+          if curl -sf --connect-timeout 10 --max-time 60 "https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=kangcodex&theme=tokyonight" > "$TMP_SVG" && grep -q "<svg" "$TMP_SVG" && ! grep -qi "error\\|something went wrong\\|deployment\\|rate limit" "$TMP_SVG"; then
+            mv "$TMP_SVG" profile/top-langs.svg
+          else
+            echo "Failed to generate top-langs.svg; keeping the existing card"
+            rm -f "$TMP_SVG"
+          fi
 
       - name: Validate SVGs
         run: |
