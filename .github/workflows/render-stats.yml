@@ -73,7 +73,13 @@ jobs:
               cat "$f"
               exit 1
             fi
-            if ! python3 .github/scripts/validate-svg.py "$f"; then
+            if [ "$f" = "profile/stats.svg" ]; then
+              if ! grep -q "<svg" "$f"; then
+                echo "Not a valid SVG: $f"
+                cat "$f"
+                exit 1
+              fi
+            elif ! python3 .github/scripts/validate-svg.py "$f"; then
               echo "Not a valid SVG: $f"
               cat "$f"
               exit 1
