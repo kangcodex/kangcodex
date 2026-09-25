@@ -21,8 +21,7 @@
 </p>
 
 <p align="center">
-  <img src="./profile/top-langs.svg" alt="Top Languages (by code size)" height="170" />
-  <img src="./profile/most-commit-langs.svg" alt="Most Used Languages (by commits)" height="170" />
+  <img src="./profile/top-langs.svg" alt="Most Used Languages (by commits)" height="170" />
 </p>
 
 <p align="center">
