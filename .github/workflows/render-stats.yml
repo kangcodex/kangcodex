@@ -26,7 +26,7 @@ jobs:
             mv "$TMP_SVG" profile/stats.svg
           else
             echo "Failed to render stats.svg (HTTP ${HTTP_CODE:-curl-error}); keeping the last-good card"
-            head -c 200 "$TMP_SVG" || true
+            grep -aoE '(<title[^>]*>[^<]{0,200}|went wrong[^<]{0,200}|rate limit[^<]{0,100}|message[^<]{0,160})' "$TMP_SVG" || head -c 300 "$TMP_SVG"
             rm -f "$TMP_SVG"
           fi
 
