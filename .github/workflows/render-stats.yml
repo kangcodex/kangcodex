@@ -13,47 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Clone github-readme-stats
+      # The default GITHUB_TOKEN cannot render the stats card: github-readme-stats
+      # queries user-level GraphQL, and an Actions token is rejected with
+      # "Resource not accessible by integration". No PAT secret exists in this
+      # repo (github-readme-stats also hard-requires at least one PAT_1..N env
+      # var), so render via the official github-readme-stats deployment instead.
+      - name: Generate stats card
         run: |
-          git clone --depth 1 https://github.com/anuraghazra/github-readme-stats.git /tmp/github-readme-stats
-
-      - name: Install dependencies
-        run: |
-          cd /tmp/github-readme-stats || exit
-          npm ci || npm install
-
-      - name: Start local server
-        env:
-          PAT_1: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd /tmp/github-readme-stats || exit
-          node express.js &
-          echo "SERVER_PID=$!" >> "$GITHUB_ENV"
-
-      - name: Wait for server
-        run: |
-          for i in {1..30}; do
-            if curl -sf "http://localhost:9000/api?username=kangcodex" > /dev/null 2>&1; then
-              echo "Server ready"
-              exit 0
-            fi
-            sleep 1
-          done
-          echo "Server failed to start"
-          exit 1
-
-      - name: Generate cards
-        run: |
-          mkdir -p profile
-          curl -sf "http://localhost:9000/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" > profile/stats.svg
-      - name: Stop server
-        run: |
-          kill "$SERVER_PID" || true
+          TMP_SVG=$(mktemp profile/stats.svg.XXXXXX)
+          if curl -sf --connect-timeout 10 --max-time 120 "https://github-readme-stats.vercel.app/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" > "$TMP_SVG" && python3 .github/scripts/validate-svg.py "$TMP_SVG" && ! grep -qi "something went wrong\\|deployment\\|rate limit" "$TMP_SVG"; then
+            mv "$TMP_SVG" profile/stats.svg
+          else
+            echo "Failed to render stats.svg; keeping the last-good card"
+            rm -f "$TMP_SVG"
+          fi
 
       - name: Generate commit-ranked language card
         run: |

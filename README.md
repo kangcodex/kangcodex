@@ -25,6 +25,10 @@
 </p>
 
 <p align="center">
+  <sup>Languages weighted by commits GitHub counts in my public contribution graph, grouped by each repository's primary language.</sup>
+</p>
+
+<p align="center">
   <img src="https://streak-stats.demolab.com?user=kangcodex&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
 </p>
 
