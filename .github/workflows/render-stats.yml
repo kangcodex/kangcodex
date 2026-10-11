@@ -21,10 +21,12 @@ jobs:
       - name: Generate stats card
         run: |
           TMP_SVG=$(mktemp profile/stats.svg.XXXXXX)
-          if curl -sf --connect-timeout 10 --max-time 120 "https://github-readme-stats.vercel.app/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" > "$TMP_SVG" && python3 .github/scripts/validate-svg.py "$TMP_SVG" && ! grep -qi "something went wrong\\|deployment\\|rate limit" "$TMP_SVG"; then
+          HTTP_CODE=$(curl -sS --connect-timeout 10 --max-time 120 -o "$TMP_SVG" -w '%{http_code}' "https://github-readme-stats.vercel.app/api?username=kangcodex&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" || true)
+          if [ "$HTTP_CODE" = "200" ] && python3 .github/scripts/validate-svg.py "$TMP_SVG" && ! grep -qi "something went wrong\\|deployment\\|rate limit" "$TMP_SVG"; then
             mv "$TMP_SVG" profile/stats.svg
           else
-            echo "Failed to render stats.svg; keeping the last-good card"
+            echo "Failed to render stats.svg (HTTP ${HTTP_CODE:-curl-error}); keeping the last-good card"
+            head -c 200 "$TMP_SVG" || true
             rm -f "$TMP_SVG"
           fi
 
